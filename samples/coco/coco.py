@@ -85,7 +85,7 @@ class CocoConfig(Config):
     # GPU_COUNT = 8
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 80  # COCO has 80 classes
+    NUM_CLASSES = 1 + 23  # COCO has 80 classes
 
 
 ############################################################
@@ -109,10 +109,10 @@ class CocoDataset(utils.Dataset):
         if auto_download is True:
             self.auto_download(dataset_dir, subset, year)
 
-        coco = COCO("{}/annotations/instances_{}{}.json".format(dataset_dir, subset, year))
+        coco = COCO("/content/HRSC2016-3/train/_annotations.coco.json")
         if subset == "minival" or subset == "valminusminival":
             subset = "val"
-        image_dir = "{}/{}{}".format(dataset_dir, subset, year)
+        image_dir = "/content/HRSC2016-3/train"
 
         # Load all classes or a subset?
         if not class_ids:
@@ -474,11 +474,15 @@ if __name__ == '__main__':
 
     # Load weights
     print("Loading weights ", model_path)
+<<<<<<< HEAD
     # original
     # model.load_weights(model_path, by_name=True)
     # config for eva
     model.load_weights(model_path, by_name=True,
                        exclude=["mrcnn_class_logits", "mrcnn_bbox_fc", "mrcnn_bbox", "mrcnn_mask"])
+=======
+    model.load_weights(model_path, by_name=True, exclude=[ "mrcnn_class_logits", "mrcnn_bbox_fc", "mrcnn_bbox", "mrcnn_mask"])
+>>>>>>> 5accfe0cb1300f59a4b6673e95556ed17b4b51ac
 
     # Train or evaluate
     if args.command == "train":
@@ -506,7 +510,7 @@ if __name__ == '__main__':
         print("Training network heads")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE,
-                    epochs=40,
+                    epochs=10,
                     layers='heads',
                     augmentation=augmentation)
 
@@ -515,7 +519,7 @@ if __name__ == '__main__':
         print("Fine tune Resnet stage 4 and up")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE,
-                    epochs=120,
+                    epochs=30,
                     layers='4+',
                     augmentation=augmentation)
 
@@ -524,7 +528,7 @@ if __name__ == '__main__':
         print("Fine tune all layers")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE / 10,
-                    epochs=160,
+                    epochs=40,
                     layers='all',
                     augmentation=augmentation)
 
