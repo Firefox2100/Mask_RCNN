@@ -112,6 +112,7 @@ def display_instances(image, boxes, masks, class_ids, class_names,
 
     # Generate random colors
     colors = colors or random_colors(N)
+    print(colors)
 
     # Show area outside image boundaries.
     height, width = image.shape[:2]
@@ -171,7 +172,7 @@ def save_instances(image, boxes, masks, class_ids, class_names,
                    scores=None, title="",
                    figsize=(16, 16),
                    show_mask=True, show_bbox=True,
-                   colors=None, captions=None,
+                   colors=None, captions=None, directions=None,
                    save_path='/content/result.png'):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
@@ -224,7 +225,8 @@ def save_instances(image, boxes, masks, class_ids, class_names,
             class_id = class_ids[i]
             score = scores[i] if scores is not None else None
             label = class_names[class_id]
-            caption = "{} {:.3f}".format(label, score) if score else label
+            direction = directions[i] if directions is not None else None
+            caption = "Class:{} Score:{:.3f} Direction:{:.3f}".format(label, score, direction) if score and direction else label
         else:
             caption = captions[i]
         ax.text(x1, y1 + 8, caption,
